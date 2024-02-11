@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  */
 contract XShoeNFT is ERC721, Ownable {
     string private _tokenURI;
+    uint256 private _tokenId;
 
     event TokenURIChanged(string newTokenURI);
     event TokenMinted(address indexed to, uint256 indexed tokenId);
@@ -26,37 +27,18 @@ contract XShoeNFT is ERC721, Ownable {
         string memory initialTokenURI
     ) ERC721(name, symbol) Ownable(msg.sender) {
         _tokenURI = initialTokenURI;
-    }
-
-    /**
-     * @dev Return the base URI for retrieving token metadata.
-     * @return The base URI.
-     */
-    function _baseURI() internal view override returns (string memory) {
-        return _tokenURI;
+        _tokenId = 1;
     }
 
     /**
      * @dev Mints a new token with the given ID and assigns it to the specified address.
      * @param to The address to which the new token will be assigned.
-     * @param tokenId The ID of the new token.
      */
-    function mint(address to, uint256 tokenId) external {
-        _safeMint(to, tokenId);
-        emit TokenMinted(to, tokenId);
-    }
+    function mint(address to) external {
+        _safeMint(to, _tokenId);
+        emit TokenMinted(to, _tokenId);
 
-    /**
-     * @dev Overrides the ERC721 tokenURI function to return the static base URI concatenated with the token ID.
-     * @param tokenId The ID of the token.
-     * @return The URI for the given token.
-     */
-    function tokenURI(
-        uint256 tokenId
-    ) public view override returns (string memory) {
-        _requireOwned(tokenId);
-
-        return _tokenURI;
+        _tokenId += 1;
     }
 
     /**
@@ -67,5 +49,32 @@ contract XShoeNFT is ERC721, Ownable {
     function setTokenURI(string memory newTokenURI) external onlyOwner {
         _tokenURI = newTokenURI;
         emit TokenURIChanged(newTokenURI);
+    }
+
+    /**
+     * @dev public function to return the static token URI for retrieving token metadata.
+     * @return The base URI.
+     */
+    function tokenURI() public view returns (string memory) {
+        return _tokenURI;
+    }
+
+    /**
+     * @dev public function to override token URI to static token URI for retrieving token metadata.
+     * @return The base URI.
+     */
+    function tokenURI(
+        uint256 tokenId
+    ) public view override returns (string memory) {
+        _requireOwned(tokenId);
+        return _tokenURI;
+    }
+
+    /**
+     * @dev Internal function to override the base URI for retrieving token metadata.
+     * @return The base URI.
+     */
+    function _baseURI() internal view override returns (string memory) {
+        return _tokenURI;
     }
 }
