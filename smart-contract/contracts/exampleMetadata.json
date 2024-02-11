@@ -1,0 +1,11 @@
+{
+  "name": "XShoes",
+  "description": "A rare XShoes NFT.",
+  "image": "https://app.unikura.xyz/assets/images/creative/poster/TCG.png",
+  "attributes": [
+    { "trait_type": "Category", "value": "Shoes" },
+    { "trait_type": "Score", "value": 8 },
+    { "trait_type": "Color", "value": "red" },
+    { "trait_type": "Year", "value": "2024" }
+  ]
+}
