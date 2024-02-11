@@ -11,6 +11,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract XShoeNFT is ERC721, Ownable {
     string private _tokenURI;
     uint256 private _tokenId;
+    uint256[] private tokenIds;
 
     event TokenURIChanged(string newTokenURI);
     event TokenMinted(address indexed to, uint256 indexed tokenId);
@@ -36,6 +37,8 @@ contract XShoeNFT is ERC721, Ownable {
      */
     function mint(address to) external {
         _safeMint(to, _tokenId);
+        tokenIds.push(_tokenId);
+
         emit TokenMinted(to, _tokenId);
 
         _tokenId += 1;
@@ -57,6 +60,14 @@ contract XShoeNFT is ERC721, Ownable {
      */
     function tokenURI() public view returns (string memory) {
         return _tokenURI;
+    }
+
+    /**
+     * @dev public function to return all the minted NFT
+     * @return all token ids.
+     */
+    function allTokenIds() public view returns (uint256[] memory) {
+        return tokenIds;
     }
 
     /**
