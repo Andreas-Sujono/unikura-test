@@ -1,7 +1,7 @@
 {
   "name": "XShoes",
   "description": "A rare XShoes NFT.",
-  "image": "https://app.unikura.xyz/assets/images/creative/poster/TCG.png",
+  "imageId": "bafybeidvg2nqotbdhf766buzvk6s6qu3qmb5i4nk2yu7wna4pbonec5igy",
   "attributes": [
     { "trait_type": "Category", "value": "Shoes" },
     { "trait_type": "Score", "value": 8 },

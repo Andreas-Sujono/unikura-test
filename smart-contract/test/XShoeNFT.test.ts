@@ -3,10 +3,10 @@ import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 
 describe("XShoeNFT", function () {
-  const NFTName = "MyNFT";
-  const NFTSymbol = "NFT";
+  const NFTName = "XShoeNFT";
+  const NFTSymbol = "XSHOE";
   const NFTBaseURI =
-    "https://amber-particular-cuckoo-729.mypinata.cloud/ipfs/QmTctBgr9NsQ1qKkU8yCidke6bAzN3WqLBXqyL1KMgp8J3";
+    "https://amber-particular-cuckoo-729.mypinata.cloud/ipfs/QmZAvpoMFiQypHkb7f7LY5SXodaYFd8SKDTJUjhi4YXPtS";
 
   async function deployNFTFixture() {
     const [owner, addr1] = await ethers.getSigners();
