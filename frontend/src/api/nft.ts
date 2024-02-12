@@ -21,7 +21,7 @@ const getNFTData = async (
     provider
   );
 
-  const allTokenIds = await NFTContract.allTokenIds();
+  const allTokenIds = ["1"]; // await NFTContract.allTokenIds();
   const baseURI = await NFTContract.tokenURI(); //assume all token has same URI metadata
 
   if (!baseURI || !allTokenIds?.length) return [];

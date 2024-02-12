@@ -14,10 +14,11 @@ const chains = blockchains.map((item) => ({
 export default init({
   wallets: [injected],
   chains,
+  theme: "dark",
   appMetadata: {
     name: "NFTApp",
-    icon: "https://img.freepik.com/free-vector/nft-non-fungible-token-concept-with-neon-light-effect_1017-41102.jpg",
-    logo: "https://img.freepik.com/free-vector/nft-non-fungible-token-concept-with-neon-light-effect_1017-41102.jpg",
+    icon: "/logo-white.svg",
+    logo: "/logo-white.svg",
     description: "NFT App",
     gettingStartedGuide: "http://mydapp.io/getting-started",
     explore: "http://mydapp.io/about",
