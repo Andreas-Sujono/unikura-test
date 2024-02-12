@@ -1,6 +1,6 @@
 import { NFTItem } from "@/types";
 import { BlockchainMetadata } from "./../constants/contracts";
-import { blockchains, xShoeNFTAbi } from "@/constants";
+import { blockchains, collectionNftAbi } from "@/constants";
 import { getDefaultProvider, toIpfsUrl } from "@/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
@@ -17,8 +17,8 @@ const getNFTData = async (
   try {
     const provider = getDefaultProvider(chainMetadata.chainId);
     const NFTContract = new ethers.Contract(
-      chainMetadata.addresses.xShoeNFT,
-      xShoeNFTAbi,
+      chainMetadata.addresses.collectionNft,
+      collectionNftAbi,
       provider
     );
 
@@ -82,8 +82,8 @@ export const useMintNFT = () => {
       if (!walletAddress || !provider || !chainMetadata) return;
 
       const NFTContract = new ethers.Contract(
-        chainMetadata.addresses.xShoeNFT,
-        xShoeNFTAbi,
+        chainMetadata.addresses.collectionNft,
+        collectionNftAbi,
         provider
       );
 

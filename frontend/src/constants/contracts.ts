@@ -1,9 +1,9 @@
 export const contractAddreses = {
   137: {
-    xShoeNFT: "0xFf35064cC088E9c22AEbf321EC4631664979a131",
+    collectionNft: "0xFf35064cC088E9c22AEbf321EC4631664979a131",
   },
   97: {
-    xShoeNFT: "0x7F8C624B8Ed3d703e698751Bdd5A5C705f67b265",
+    collectionNft: "0x7F8C624B8Ed3d703e698751Bdd5A5C705f67b265",
   },
 };
 
