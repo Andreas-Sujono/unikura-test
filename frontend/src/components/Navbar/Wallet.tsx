@@ -1,5 +1,5 @@
 import { useWallet } from "@/hooks/useWallet";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 export const Wallet = () => {
   const { walletAddress, connect } = useWallet();
@@ -19,12 +19,12 @@ export const Wallet = () => {
     );
   }
   return (
-    <Button
-      color="secondary"
-      variant="contained"
-      sx={{ borderRadius: "0.5rem" }}
+    <Box
+      sx={{
+        p: "0.5rem 1rem",
+      }}
     >
-      Connect wallet
-    </Button>
+      {walletAddress}
+    </Box>
   );
 };

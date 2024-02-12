@@ -13,12 +13,30 @@ export const AnalyticsCard = ({
   name: string;
 }) => {
   return (
-    <Paper>
-      <Typography>{name}</Typography>
+    <Paper
+      sx={{
+        p: "1rem",
+        borderRadius: "0.5rem",
+      }}
+    >
+      <Typography color="text.secondary" variant="body2">
+        {name}
+      </Typography>
 
-      <Box>
-        <Typography>{number}</Typography>
-        <Typography>{over}</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-end",
+          mt: "0.2rem",
+          gap: "8px",
+        }}
+      >
+        <Typography variant="h3" color="text.primary">
+          {number}
+        </Typography>
+        <Typography variant="body1" sx={{ position: "relative", top: "-4px" }}>
+          {over ? `/ ${over}` : ""}
+        </Typography>
       </Box>
     </Paper>
   );

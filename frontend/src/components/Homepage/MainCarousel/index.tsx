@@ -1,34 +1,39 @@
 "use client";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
+import { useGetAllMintedNFT } from "@/api/nft";
+import { NFTCard } from "@/components/Cards/NftCard";
+import { NFTItem } from "@/types";
+import { Box } from "@mui/material";
+import "keen-slider/keen-slider.min.css";
+import { useKeenSlider } from "keen-slider/react";
 
 export const MainCarousel = () => {
+  const { data: nftMap } = useGetAllMintedNFT();
+  const allNftItems = ([] as NFTItem[]).concat(...Object.values(nftMap || {}));
+
+  const [sliderRef, instanceRef] = useKeenSlider(
+    {
+      loop: true,
+      slides: { origin: "center", perView: 5, spacing: 10 },
+      slideChanged() {
+        console.log("slide changed");
+      },
+    },
+    []
+  );
+
   return (
-    <Carousel responsive={responsive}>
-      <div>Item 1</div>
-      <div>Item 2</div>
-      <div>Item 3</div>
-      <div>Item 4</div>
-    </Carousel>
+    <Box sx={{ p: "2rem 0" }} ref={sliderRef} className="keen-slider">
+      {[...allNftItems, ...allNftItems, ...allNftItems, ...allNftItems].map(
+        (item) => (
+          <div
+            className="keen-slider__slide"
+            key={item.tokenId + item.chainMetadata.chainId}
+          >
+            <NFTCard nft={item} />
+          </div>
+        )
+      )}
+    </Box>
   );
 };
 

@@ -14,35 +14,41 @@ export enum QUERY_KEY {
 const getNFTData = async (
   chainMetadata: BlockchainMetadata
 ): Promise<NFTItem[]> => {
-  const provider = getDefaultProvider(chainMetadata.chainId);
-  const NFTContract = new ethers.Contract(
-    chainMetadata.addresses.xShoeNFT,
-    xShoeNFTAbi,
-    provider
-  );
+  try {
+    const provider = getDefaultProvider(chainMetadata.chainId);
+    const NFTContract = new ethers.Contract(
+      chainMetadata.addresses.xShoeNFT,
+      xShoeNFTAbi,
+      provider
+    );
 
-  const allTokenIds = ["1"]; // await NFTContract.allTokenIds();
-  const baseURI = await NFTContract.tokenURI(); //assume all token has same URI metadata
+    const allTokenIds = ["1"]; // await NFTContract.allTokenIds();
+    const baseURI = await NFTContract.tokenURI(); //assume all token has same URI metadata
 
-  if (!baseURI || !allTokenIds?.length) return [];
+    if (!baseURI || !allTokenIds?.length) return [];
 
-  const nftMetadata = await axios.get(baseURI);
+    const nftMetadata = await axios.get(baseURI);
 
-  if (!nftMetadata.data) return [];
+    if (!nftMetadata.data) return [];
 
-  return allTokenIds.map((item: string) => ({
-    tokenId: item,
-    name: nftMetadata.data.name,
-    tokenURI: baseURI,
-    description: nftMetadata.data.name,
-    imageURL: toIpfsUrl(nftMetadata.data.imageId),
-    attributes: nftMetadata.data.attributes.map(
-      (item2: { trait_type: string; value: string }) => ({
-        traitType: item2.trait_type,
-        value: item2.value,
-      })
-    ),
-  }));
+    return allTokenIds.map((item: string) => ({
+      tokenId: item,
+      name: nftMetadata.data.name,
+      tokenURI: baseURI,
+      description: nftMetadata.data.name,
+      imageURL: toIpfsUrl(nftMetadata.data.imageId),
+      attributes: nftMetadata.data.attributes.map(
+        (item2: { trait_type: string; value: string }) => ({
+          traitType: item2.trait_type,
+          value: item2.value,
+        })
+      ),
+      chainMetadata,
+    }));
+  } catch (err) {
+    console.log("err: ", err);
+    return [];
+  }
 };
 
 export const useGetAllMintedNFT = () => {
@@ -50,6 +56,7 @@ export const useGetAllMintedNFT = () => {
     queryKey: [QUERY_KEY.ALL_MINTED_NFT],
     queryFn: async () => {
       const promises: Promise<NFTItem[]>[] = [];
+
       blockchains.forEach((chainMetadata) => {
         promises.push(getNFTData(chainMetadata));
       });
@@ -62,6 +69,9 @@ export const useGetAllMintedNFT = () => {
 
       return blockchainRes;
     },
+    enabled: true,
+    staleTime: 50000,
+    retry: 1,
   });
 };
 

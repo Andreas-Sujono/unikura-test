@@ -1,3 +1,5 @@
+import { BlockchainMetadata } from "@/constants";
+
 export interface NFTItem {
   tokenId: string;
   name: string;
@@ -8,4 +10,5 @@ export interface NFTItem {
     traitType: string;
     value: string;
   };
+  chainMetadata: BlockchainMetadata;
 }

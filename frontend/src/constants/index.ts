@@ -1,5 +1,5 @@
 export * from "./contracts";
 export * from "./theme";
-import * as xShoeNFTAbi from "./ABIs/xshoeNFT.json";
+import xShoeNFTAbi from "./ABIs/xshoeNFT.json";
 
 export { xShoeNFTAbi };

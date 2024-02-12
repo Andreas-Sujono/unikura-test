@@ -21,7 +21,7 @@ export default function Footer() {
         textAlign: { sm: "center", md: "left" },
       }}
     >
-      <Divider sx={{ background: "#423c3c", mb: "2rem" }} />
+      <Divider sx={{ background: "#423c3c", mb: "1.5rem" }} />
       <Copyright />
     </Container>
   );
