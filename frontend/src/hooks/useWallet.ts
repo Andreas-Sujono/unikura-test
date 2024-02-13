@@ -1,4 +1,4 @@
-import { getBlockchainMetadata, toChainIdHex } from "@/utils";
+import { getBlockchainMetadata, toChainIdHex, toChainIdNumber } from "@/utils";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { ethers } from "ethers";
 
@@ -15,14 +15,15 @@ export const useWallet = () => {
     : null;
   return {
     walletAddress: wallet?.accounts?.[0]?.address || "",
-    chainId,
+    chainId: toChainIdNumber(chainId),
     provider,
     disconnect: () => wallet && disconnect(wallet),
     chainMetadata: getBlockchainMetadata(chainId),
-    setChain: (chainId: string | number) =>
+    setChain: (chainId: string | number) => {
       setChain({
         chainId: toChainIdHex(chainId),
-      }),
+      });
+    },
     connect,
   };
 };

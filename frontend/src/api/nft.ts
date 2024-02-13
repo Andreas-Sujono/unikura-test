@@ -92,10 +92,11 @@ export const useMintNFT = () => {
     mutationFn: async ({ onPending }: { onPending?: () => void }) => {
       if (!walletAddress || !provider || !chainMetadata) return;
 
+      const signer = await provider.getSigner();
       const NFTContract = new ethers.Contract(
         chainMetadata.addresses.collectionNft,
         collectionNftAbi,
-        provider
+        signer
       );
 
       const tx: ethers.TransactionResponse = await NFTContract.mint(

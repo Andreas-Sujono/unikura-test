@@ -4,5 +4,5 @@ export const themeColor = {
   textPrimary: "#ffffff",
   textSecondary: "#828284",
   background: "#171738",
-  backgroundLight: "#49495e4a",
+  backgroundLight: "#2a2946",
 };
