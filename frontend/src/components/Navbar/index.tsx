@@ -13,6 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
 import { StyledToolbar } from "./Styles";
 import { Wallet } from "./Wallet";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 const navItems = [
   {
@@ -28,6 +29,9 @@ const navItems = [
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { push } = useRouter();
+  const { width } = useWindowSize();
+
+  const logoSize = width > 500 ? 50 : 30;
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setIsDrawerOpen(newOpen);
@@ -40,12 +44,11 @@ export default function Navbar() {
   return (
     <AppBar
       position="fixed"
-      sx={{
+      sx={(theme) => ({
         boxShadow: 0,
-        bgcolor: "transparent",
-        backgroundImage: "none",
-        mt: 2,
-      }}
+        background: theme.palette.background.default,
+        p: "0.3rem 0",
+      })}
     >
       <Container maxWidth="lg">
         <StyledToolbar>
@@ -65,8 +68,8 @@ export default function Navbar() {
                 cursor: "pointer",
               }}
               alt="NFT"
-              width={50}
-              height={50}
+              width={logoSize}
+              height={logoSize}
             />
             <Box sx={{ display: { xs: "none", md: "flex" }, ml: "2rem" }}>
               {navItems.map((item) => (
@@ -94,12 +97,11 @@ export default function Navbar() {
           <Box sx={{ display: { sm: "", md: "none" } }}>
             <Button
               variant="text"
-              color="primary"
               aria-label="menu"
               onClick={toggleDrawer(true)}
               sx={{ minWidth: "30px", p: "4px" }}
             >
-              <MenuIcon />
+              <MenuIcon sx={{ color: "white" }} />
             </Button>
             <Drawer
               anchor="right"
@@ -110,7 +112,7 @@ export default function Navbar() {
                 sx={{
                   minWidth: "60dvw",
                   p: 2,
-                  backgroundColor: "background.paper",
+                  backgroundColor: "background.primary",
                   flexGrow: 1,
                 }}
               >
@@ -124,6 +126,7 @@ export default function Navbar() {
                     </Typography>
                   </MenuItem>
                 ))}
+                <Wallet />
               </Box>
             </Drawer>
           </Box>

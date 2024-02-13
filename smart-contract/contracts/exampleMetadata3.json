@@ -1,0 +1,10 @@
+{
+  "name": "XCard",
+  "description": "A rare Card NFT.",
+  "imageId": "QmZcRxLgxKmJsdbkfAb5ywRpcwsB2QoMmTb95Qi1zXsyhs",
+  "attributes": [
+    { "trait_type": "Category", "value": "Card" },
+    { "trait_type": "Score", "value": 9 },
+    { "trait_type": "Year", "value": "2019" }
+  ]
+}

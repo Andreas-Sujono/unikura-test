@@ -1,0 +1,10 @@
+{
+  "name": "XPainting",
+  "description": "A rare painting NFT.",
+  "imageId": "QmaR1Tt1Xyorq4xXGWWVpxKD92rMWPED4pxnkqwC5nMczG",
+  "attributes": [
+    { "trait_type": "Category", "value": "Painting" },
+    { "trait_type": "Score", "value": 10 },
+    { "trait_type": "Year", "value": "1998" }
+  ]
+}

@@ -19,6 +19,7 @@ export default function Footer() {
     <Container
       sx={{
         textAlign: { sm: "center", md: "left" },
+        pb: "2rem",
       }}
     >
       <Divider sx={{ background: "#423c3c", mb: "1.5rem" }} />

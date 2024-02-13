@@ -9,6 +9,7 @@ export interface NFTItem {
   attributes: {
     traitType: string;
     value: string;
-  };
+  }[];
   chainMetadata: BlockchainMetadata;
+  owner: string;
 }

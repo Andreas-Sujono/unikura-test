@@ -14,5 +14,5 @@ npx hardhat run scripts/deploy.ts
 npx hardhat verify --network bscTestnet <address> XShoeNFT XSHOE  "https://amber-particular-cuckoo-729.mypinata.cloud/ipfs/QmTctBgr9NsQ1qKkU8yCidke6bAzN3WqLBXqyL1KMgp8J3"
 ```
 
-deployment bsc testnet: 0x7F8C624B8Ed3d703e698751Bdd5A5C705f67b265
-deployment mumbai: 0xFf35064cC088E9c22AEbf321EC4631664979a131
+deployment bsc testnet: 0x0D820b8fb28774bA41eE3aF23D26C455BC0dE38F
+deployment mumbai: 0x9842c4C9cdD292D550C93Bb49065Fee28aB8fd12

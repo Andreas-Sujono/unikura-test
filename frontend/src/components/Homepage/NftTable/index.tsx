@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -5,21 +6,16 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
+import { getComparator, stableSort } from "./utils";
+import { useGetAllMintedNFT } from "@/api/nft";
+import { NFTItem } from "@/types";
+import Image from "next/image";
+import { Typography } from "@mui/material";
 
-const tableHeads = [
+const tableHeadData = [
   {
     label: "Token ID",
     key: "tokenId",
@@ -52,49 +48,43 @@ const tableHeads = [
   },
 ];
 
+type OrderType = string;
+
 interface EnhancedTableProps {
-  numSelected: number;
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  order: Order;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
+  order: "asc" | "desc";
   orderBy: string;
-  rowCount: number;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+function NftTableHead(props: EnhancedTableProps) {
+  const { order, orderBy, onRequestSort } = props;
+
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
   return (
     <TableHead>
       <TableRow>
-        {tableHeads.map((headCell) => (
+        {tableHeadData.map((headCell) => (
           <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            key={headCell.key}
+            align={"left"}
+            padding={"normal"}
+            sortDirection={orderBy === headCell.key ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-            </TableSortLabel>
+            {headCell.sortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.key}
+                direction={orderBy === headCell.key ? order : "asc"}
+                onClick={createSortHandler(headCell.key)}
+              >
+                <Typography color="text.secondary">{headCell.label}</Typography>
+              </TableSortLabel>
+            ) : (
+              <Typography color="text.secondary">{headCell.label}</Typography>
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -102,221 +92,157 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
+export default function NftTable() {
+  const [order, setOrder] = React.useState<"asc" | "desc">("asc");
+  const [orderBy, setOrderBy] = React.useState<OrderType>("tokenId");
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Nutrition
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
-export default function EnhancedTable() {
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { data: nftMap } = useGetAllMintedNFT();
+  const allNftItems = ([] as NFTItem[]).concat(...Object.values(nftMap || {}));
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: OrderType
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
+      stableSort<NFTItem>(
+        allNftItems.map((item) => ({
+          ...item,
+          chain: item.chainMetadata.label,
+          score: Number(
+            item.attributes.find((item2) => item2.traitType === "Score")
+              ?.value || 0
+          ),
+        })),
+        getComparator(order, orderBy)
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, allNftItems]
   );
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+    <Box maxWidth="lg" sx={{ margin: "auto", mt: "4rem" }}>
+      <Typography sx={{ mb: "1rem" }} variant="h6" fontWeight={500}>
+        All NFT
+      </Typography>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+          borderRadius: "0.5rem",
+          background: "transparent",
+        }}
+      >
         <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
+          <Table sx={{ minWidth: 750, p: "1rem" }} size={"medium"}>
+            <NftTableHead
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
+              {visibleRows.map((row: NFTItem) => {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: "pointer" }}
+                    key={row.tokenId + row.chainMetadata.label}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
+                    <TableCell align="left">{row.tokenId}</TableCell>
+                    <TableCell align="left">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
                         }}
-                      />
+                      >
+                        <Image
+                          src={row.imageURL}
+                          width={80}
+                          height={80}
+                          alt=""
+                          style={{ borderRadius: "8px" }}
+                        />
+                        <Typography>{row.name}</Typography>
+                      </Box>
                     </TableCell>
                     <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                      align="left"
+                      sx={{
+                        maxWidth: "300px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
                     >
-                      {row.name}
+                      {row.description}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="left">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <Image
+                          src={row.chainMetadata.logoUrl}
+                          width={24}
+                          height={24}
+                          alt=""
+                        />
+                        <Typography>{row.chainMetadata.label}</Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.attributes.map((item) => (
+                        <ul
+                          key={item.traitType}
+                          style={{
+                            listStyleType: "none",
+                            margin: 0,
+                            padding: 0,
+                          }}
+                        >
+                          <li>
+                            <Typography
+                              color="text.secondary"
+                              display="inline"
+                              variant="body2"
+                            >
+                              {item.traitType}: &nbsp;
+                            </Typography>
+                            <Typography color="text.primary" display="inline">
+                              {item.value}
+                            </Typography>
+                          </li>
+                        </ul>
+                      ))}
+                    </TableCell>
+                    <TableCell align="left">
+                      <Typography
+                        color="text.primary"
+                        display="inline"
+                        variant="h6"
+                      >
+                        {
+                          row.attributes.find(
+                            (item) => item.traitType === "Score"
+                          )?.value
+                        }
+                      </Typography>
+                    </TableCell>
                   </TableRow>
                 );
               })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </Box>
   );
 }
