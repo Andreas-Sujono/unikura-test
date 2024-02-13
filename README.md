@@ -7,6 +7,7 @@ This project is a Non-Fungible Token (NFT) project aimed at creating and managin
 - **Next.js (>= v13)**: A React framework for building server-side rendered and statically generated applications.
 - **TypeScript**: A statically typed superset of JavaScript that compiles to plain JavaScript.
 - **Tailwind CSS**: A utility-first CSS framework for quickly building custom designs.
+- **React Query**: A server state management to share API state between components.
 - **Solidity**: A statically typed programming language used for developing smart contracts on the Ethereum blockchain.
 - **Hardhat (with TypeScript) or Foundry**: Development environments for Ethereum smart contracts, enabling testing, deployment, and debugging.
 

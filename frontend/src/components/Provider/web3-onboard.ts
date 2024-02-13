@@ -17,8 +17,8 @@ export default init({
   theme: "dark",
   appMetadata: {
     name: "NFTApp",
-    icon: "/logo-white.svg",
-    logo: "/logo-white.svg",
+    icon: "https://pouch.jumpshare.com/preview/Rm6e-dBHHqnlCQOm3Fa5y-wYj49V-fXuZnnwOKX4DZw5f6Qil2a-1lTGyNDB34yQnvHnEOZLpQetgV1w9wQvSDqK8ko-ipB4Ljvq2ElG21c",
+    logo: "https://pouch.jumpshare.com/preview/Rm6e-dBHHqnlCQOm3Fa5y-wYj49V-fXuZnnwOKX4DZw5f6Qil2a-1lTGyNDB34yQnvHnEOZLpQetgV1w9wQvSDqK8ko-ipB4Ljvq2ElG21c",
     description: "NFT App",
     gettingStartedGuide: "http://mydapp.io/getting-started",
     explore: "http://mydapp.io/about",

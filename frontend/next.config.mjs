@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
+  distDir: "build",
+  basePath: "/unikura",
   compiler: {
     styledComponents: true,
   },
@@ -12,6 +15,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    unoptimized: true,
   },
 };
 
