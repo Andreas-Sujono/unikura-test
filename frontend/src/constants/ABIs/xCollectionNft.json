@@ -13,7 +13,7 @@
       },
       {
         "internalType": "string",
-        "name": "initialTokenURI",
+        "name": "initialDefaultTokenURI",
         "type": "string"
       }
     ],
@@ -199,6 +199,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newTokenURI",
+        "type": "string"
+      }
+    ],
+    "name": "DefaultTokenURIChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -238,6 +251,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "newTokenURI",
         "type": "string"
@@ -270,6 +289,19 @@
     ],
     "name": "Transfer",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "allTokenIds",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -493,6 +525,24 @@
         "type": "string"
       }
     ],
+    "name": "setDefaultTokenURI",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "newTokenURI",
+        "type": "string"
+      }
+    ],
     "name": "setTokenURI",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -520,19 +570,6 @@
   {
     "inputs": [],
     "name": "symbol",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenURI",
     "outputs": [
       {
         "internalType": "string",

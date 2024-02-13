@@ -9,9 +9,17 @@ export const getBlockchainMetadata = (chainId: number | string | null) => {
 
 export const toChainIdHex = (chainId: number | string | null): string => {
   if (!chainId) return "";
-  if ((chainId as string).startsWith("0x")) return chainId as string;
+  if (String(chainId as string)?.startsWith("0x")) return chainId as string;
 
-  return String(parseInt(String(chainId)));
+  return "0x" + Number(chainId).toString(16);
+};
+
+export const toChainIdNumber = (chainId: number | string | null): number => {
+  if (!chainId) return 0;
+  if (String(chainId as string)?.startsWith("0x"))
+    return parseInt(chainId as string);
+
+  return Number(chainId);
 };
 
 export const getDefaultProvider = (chainId: number | string) => {

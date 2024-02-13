@@ -1,6 +1,6 @@
 import { NFTItem } from "@/types";
 import { BlockchainMetadata } from "./../constants/contracts";
-import { blockchains, xShoeNFTAbi } from "@/constants";
+import { blockchains, collectionNftAbi } from "@/constants";
 import { getDefaultProvider, toIpfsUrl } from "@/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
@@ -17,33 +17,44 @@ const getNFTData = async (
   try {
     const provider = getDefaultProvider(chainMetadata.chainId);
     const NFTContract = new ethers.Contract(
-      chainMetadata.addresses.xShoeNFT,
-      xShoeNFTAbi,
+      chainMetadata.addresses.collectionNft,
+      collectionNftAbi,
       provider
     );
 
-    const allTokenIds = ["1"]; // await NFTContract.allTokenIds();
-    const baseURI = await NFTContract.tokenURI(); //assume all token has same URI metadata
+    const allTokenIds: string[] = (await NFTContract.allTokenIds()).map(
+      (item: string) => item.toString()
+    );
+    const tokenUris = await Promise.all(
+      allTokenIds.map((tokenId) => NFTContract.tokenURI(tokenId))
+    );
 
-    if (!baseURI || !allTokenIds?.length) return [];
+    if (!tokenUris.length || !allTokenIds?.length) return [];
 
-    const nftMetadata = await axios.get(baseURI);
+    const nftMetadatas = await Promise.all(
+      tokenUris.map((tokenUri) => axios.get(tokenUri))
+    );
 
-    if (!nftMetadata.data) return [];
+    const nftOwners = await Promise.all(
+      allTokenIds.map((tokenId) => NFTContract.ownerOf(tokenId))
+    );
 
-    return allTokenIds.map((item: string) => ({
+    if (!nftMetadatas.length) return [];
+
+    return allTokenIds.map((item: string, idx) => ({
       tokenId: item,
-      name: nftMetadata.data.name,
-      tokenURI: baseURI,
-      description: nftMetadata.data.name,
-      imageURL: toIpfsUrl(nftMetadata.data.imageId),
-      attributes: nftMetadata.data.attributes.map(
+      name: nftMetadatas[idx].data.name,
+      tokenURI: tokenUris[idx],
+      description: nftMetadatas[idx].data.description,
+      imageURL: toIpfsUrl(nftMetadatas[idx].data.imageId),
+      attributes: nftMetadatas[idx].data.attributes.map(
         (item2: { trait_type: string; value: string }) => ({
           traitType: item2.trait_type,
           value: item2.value,
         })
       ),
       chainMetadata,
+      owner: nftOwners[idx],
     }));
   } catch (err) {
     console.log("err: ", err);
@@ -70,7 +81,7 @@ export const useGetAllMintedNFT = () => {
       return blockchainRes;
     },
     enabled: true,
-    staleTime: 50000,
+    staleTime: 60000,
     retry: 1,
   });
 };
@@ -81,10 +92,11 @@ export const useMintNFT = () => {
     mutationFn: async ({ onPending }: { onPending?: () => void }) => {
       if (!walletAddress || !provider || !chainMetadata) return;
 
+      const signer = await provider.getSigner();
       const NFTContract = new ethers.Contract(
-        chainMetadata.addresses.xShoeNFT,
-        xShoeNFTAbi,
-        provider
+        chainMetadata.addresses.collectionNft,
+        collectionNftAbi,
+        signer
       );
 
       const tx: ethers.TransactionResponse = await NFTContract.mint(
@@ -106,4 +118,44 @@ export const useMintNFT = () => {
       }
     },
   });
+};
+
+export const useGetTopSummaryData = () => {
+  const { walletAddress } = useWallet();
+  const { data: nftMap } = useGetAllMintedNFT();
+  const allNftItems = ([] as NFTItem[]).concat(...Object.values(nftMap || {}));
+
+  const totalScore = allNftItems.reduce(
+    (acc, item) =>
+      acc +
+      Number(
+        item.attributes.find((item2) => item2.traitType === "Score")?.value || 0
+      ),
+    0
+  );
+  const userScore = allNftItems.reduce(
+    (acc, item) =>
+      acc +
+      (item.owner?.toLowerCase() === walletAddress.toLowerCase()
+        ? Number(
+            item.attributes.find((item2) => item2.traitType === "Score")
+              ?.value || 0
+          )
+        : 0),
+    0
+  );
+
+  const totalNft = allNftItems.length;
+  const ownNft = allNftItems.reduce(
+    (acc, item) =>
+      acc + (item.owner?.toLowerCase() === walletAddress.toLowerCase() ? 1 : 0),
+    0
+  );
+
+  return {
+    totalScore,
+    userScore,
+    totalNft,
+    ownNft,
+  };
 };

@@ -1,0 +1,10 @@
+{
+  "name": "XBag",
+  "description": "A rare Bag NFT.",
+  "imageId": "QmX9nbP5Nva9HNc6WLqEM2XifPFU32B8KJzJVCqWMQ2hXj",
+  "attributes": [
+    { "trait_type": "Category", "value": "Bag" },
+    { "trait_type": "Score", "value": 9.5 },
+    { "trait_type": "Year", "value": "2024" }
+  ]
+}
