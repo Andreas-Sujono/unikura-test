@@ -62,9 +62,7 @@ export default function Navbar() {
             }}
           >
             <Image
-              src={
-                "https://pouch.jumpshare.com/preview/Rm6e-dBHHqnlCQOm3Fa5y-wYj49V-fXuZnnwOKX4DZw5f6Qil2a-1lTGyNDB34yQnvHnEOZLpQetgV1w9wQvSDqK8ko-ipB4Ljvq2ElG21c"
-              }
+              src={"https://svgshare.com/i/133k.svg"}
               style={{
                 height: "auto",
                 cursor: "pointer",
